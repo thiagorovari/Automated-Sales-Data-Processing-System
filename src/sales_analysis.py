@@ -1,7 +1,7 @@
 import csv
 
-def read_csv():
-    with open("data/sales.csv",'r',encoding='utf-8') as file:
+def read_csv(path):
+    with open(path,'r',encoding='utf-8') as file:
         data = []
         for row in csv.DictReader(file):
             data.append(row)
@@ -39,14 +39,16 @@ def calculate_results(data):
 def display_report(results):
     print('====== SALES REPORT ======\n')
     print(f"Total sales processed: {results['sales_count']}")
-    print(f"Total Revenue: R$:{results['total_revenue']:.2f}\n")
+    print(f"Total Revenue: R${results['total_revenue']:.2f}\n")
     print("Revenue by product:")
     for product, revenue in results['revenue_by_product'].items():
-        print(f"- {product} R$:{revenue:.2f}")
+        print(f"- {product}: R$ {revenue:.2f}")
 
 
 if __name__ == "__main__": 
-    data = read_csv()
+    data = read_csv("data/sales_extended.csv")
     sales = calculate_results(data)
     display_report(sales)
+
+
     
