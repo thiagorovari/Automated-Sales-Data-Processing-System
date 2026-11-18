@@ -1,5 +1,5 @@
 import csv
-
+from decimal import Decimal, InvalidOperation
 def read_csv(path):
     with open(path,'r',encoding='utf-8') as file:
         data = []
@@ -23,6 +23,17 @@ def validate_csv(data):
 
         if not copy["product"].strip():
             copy["errors"].append("Product name is empty")
+
+        try:
+            price = Decimal(copy['unit_price'])
+            if not price.is_finite():
+                copy["errors"].append("Unit price must be a finite, non-negative number")
+            elif(price < 0.00):
+                copy["errors"].append("Unit price must be a finite, non-negative number")
+        except InvalidOperation:
+            copy["errors"].append("Unit price must be a finite, non-negative number")
+
+
         
 
         if(copy['errors'] == []):
@@ -39,7 +50,7 @@ def calculate_results(data):
     revenue_by_product = {}
     
     for row in data:
-        row_revenue = int(row['quantity']) * float(row['unit_price'])
+        row_revenue = int(row['quantity']) * Decimal(row['unit_price'])
         sale_values.append(row_revenue)
         product = row['product']
 
@@ -70,7 +81,7 @@ def display_report(results):
 
 if __name__ == "__main__": 
     test_data = [
-    {"product": "Notebook", "quantity": "2", "unit_price": "15.50"},
+    {"product": "Notebook", "quantity": "2", "unit_price": "Infinity"},
     {"product": "Pen", "quantity": "-3", "unit_price": "2.40"},
     {"product": "", "quantity": "abc", "unit_price": "89.90"},
     {"product": "Pencil", "quantity": "5", "unit_price": "1.50"}
