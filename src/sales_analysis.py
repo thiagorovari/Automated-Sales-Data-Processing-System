@@ -7,8 +7,31 @@ def read_csv(path):
             data.append(row)
     return data
 
-def validate_csv():
-    pass
+def validate_csv(data):
+    
+    valid =[]
+    invalid = []
+    for row in data:
+        
+        try:
+            copy = row.copy()
+            copy['errors'] = []
+            if(int(copy['quantity'])<=0):
+                copy["errors"].append("Quantity must be a positive integer")
+        except ValueError:
+                    copy["errors"].append("Quantity must be a positive integer")
+
+        if not copy["product"].strip():
+            copy["errors"].append("Product name is empty")
+        
+
+        if(copy['errors'] == []):
+            valid.append(copy)
+        else:
+            invalid.append(copy)
+    return valid, invalid
+            
+
 
 def calculate_results(data):
     results = {}
@@ -46,9 +69,18 @@ def display_report(results):
 
 
 if __name__ == "__main__": 
-    data = read_csv("data/sales_extended.csv")
-    sales = calculate_results(data)
+    test_data = [
+    {"product": "Notebook", "quantity": "2", "unit_price": "15.50"},
+    {"product": "Pen", "quantity": "-3", "unit_price": "2.40"},
+    {"product": "", "quantity": "abc", "unit_price": "89.90"},
+    {"product": "Pencil", "quantity": "5", "unit_price": "1.50"}
+    ]
+    data = test_data
+    valid_data, invalid = validate_csv(data)
+    sales = calculate_results(valid_data)
     display_report(sales)
+    print('Invalid data:\n')
+    print(invalid)
 
 
     
